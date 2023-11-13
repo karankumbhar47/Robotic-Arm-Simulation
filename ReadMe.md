@@ -3,20 +3,23 @@
 **Each one have their Seperate remote branch with respective name so if you want to change any description of domain not belongs to you can change in their branch**
 **Anyone can see any other remote traking branch**
 
-### Agent(Karan Kumbhar)
+### Agents ([Karan Kumbhar](https://github.com/karankumbhar47))
 * dummy.py
-    - uses [utils/utils.py , task/cameras] 
+    - requirement 
+        1. utils/utils.py
+        2. tasks/cameras.py
     - description         
+
 * gf_state.py
 * transporter.py
 
-### Environment(Sanket Dandge)
+### Environments (Sanket Dandge)
 
 
-### Models(Vedant Udan)
+### Models ([Vedant Udan](https://github.com/Vedant-Udan))
 
 
-### Task(Sandesh Ahire)
+### Tasks ([Sandesh Ahire](https://github.com/SandeshAhire))
 
 
 ### Utils (All)
