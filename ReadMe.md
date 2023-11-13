@@ -4,9 +4,11 @@
 **Anyone can see any other remote traking branch**
 
 ### Agent(Karan Kumbhar)
-- dummy.py
-- gf_state.py
-- transporter.py
+* dummy.py
+    - uses [utils/utils.py , task/cameras] 
+    - description         
+* gf_state.py
+* transporter.py
 
 ### Environment(Sanket Dandge)
 
@@ -23,3 +25,7 @@
 ### Other (All)
 
 
+## Directory structure
+- Explore direcotry structure 
+- Temporarily added empyt demo.file(can remove later)
+- **Try to not change structure**
