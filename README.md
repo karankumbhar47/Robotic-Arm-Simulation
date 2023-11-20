@@ -55,5 +55,5 @@
 - **Try to not change structure**
 
 ## Important Links
-- [Ravens(Google-researchers) Github Repository]('https://github.com/google-research/ravens')
-- [Presentation]('https://docs.google.com/presentation/d/1m7kzAgmbhfy63X3D3VA9B18mXPCMqbE5MMAnVUWpfZ0/edit#slide=id.g26166133547_0_718')
+- [Ravens(Google-researchers) Github Repository](https://github.com/google-research/ravens)
+- [Presentation](https://docs.google.com/presentation/d/1m7kzAgmbhfy63X3D3VA9B18mXPCMqbE5MMAnVUWpfZ0/edit#slide=id.g26166133547_0_718)
