@@ -21,7 +21,7 @@ import pybullet as p
 class Task():
   """Base Task class."""
 
-  def __init__(self, continuous = False):
+  def __init__(self, continuous=False):
     """Constructor.
 
     Args:
@@ -51,12 +51,12 @@ class Task():
 
     self.assets_root = None
 
-  def reset(self, env):  # pylint: disable=unused-argument
+  def reset(self, env): 
     if not self.assets_root:
-      raise ValueError('assets_root must be set for task, '
+      raise ValueError('assets_root must be set for the task, '
                        'call set_assets_root().')
     self.goals = []
-    self.progress = 0  # Task progression metric in range [0, 1].
+    self.progress = 0  # Task progression metric in the range [0, 1].
     self._rewards = 0  # Cumulative returned rewards.
     if self.continuous:
       self.primitive.reset()
@@ -67,6 +67,7 @@ class Task():
 
   def oracle(self, env, **kwargs):
     """Oracle agent."""
+    # Check if the task is continuous or discrete and call the appropriate oracle.
     if self.continuous:
       return self._continuous_oracle(env, **kwargs)
     return self._discrete_oracle(env)
@@ -74,13 +75,12 @@ class Task():
   def _continuous_oracle(self, env, **kwargs):
     """Continuous oracle agent.
 
-    This oracle will generate the pick and place poses using the original
-    discrete oracle. It will then interpolate intermediate actions using
-    splines.
+    This oracle generates pick and place poses using the original discrete oracle.
+    It then interpolates intermediate actions using splines.
 
     Args:
       env: The environment instance.
-      **kwargs: extra kwargs for the oracle.
+      **kwargs: Extra kwargs for the oracle.
     Returns:
       ContinuousOracle.
     """
@@ -93,9 +93,9 @@ class Task():
     """Discrete oracle agent."""
     OracleAgent = collections.namedtuple('OracleAgent', ['act'])
 
-    def act(obs, info):  # pylint: disable=unused-argument
+    def act(obs, info):  
       """Calculate action."""
-
+      
       # Oracle uses perfect RGB-D orthographic images and segmentation masks.
       _, hmap, obj_mask = self.get_true_image(env)
 
@@ -104,7 +104,6 @@ class Task():
 
       # Match objects to targets without replacement.
       if not replace:
-
         # Modify a copy of the match matrix.
         matches = matches.copy()
 
@@ -125,15 +124,13 @@ class Task():
         object_id, (symmetry, _) = objs[i]
         xyz, _ = p.getBasePositionAndOrientation(object_id)
         targets_i = np.argwhere(matches[i, :]).reshape(-1)
-        if len(targets_i) > 0:  # pylint: disable=g-explicit-length-test
+        if len(targets_i) > 0: 
           targets_xyz = np.float32([targs[j][0] for j in targets_i])
           dists = np.linalg.norm(
               targets_xyz - np.float32(xyz).reshape(1, 3), axis=1)
           nn = np.argmin(dists)
           nn_dists.append(dists[nn])
           nn_targets.append(targets_i[nn])
-
-        # Handle ignored objects.
         else:
           nn_dists.append(0)
           nn_targets.append(-1)
@@ -168,7 +165,7 @@ class Task():
       pick_pose = (np.asarray(pick_pos), np.asarray((0, 0, 0, 1)))
 
       # Get placing pose.
-      targ_pose = targs[nn_targets[pick_i]]  # pylint: disable=undefined-loop-variable
+      targ_pose = targs[nn_targets[pick_i]] 
       obj_pose = p.getBasePositionAndOrientation(objs[pick_i][0])  # pylint: disable=undefined-loop-variable
       if not self.sixdof:
         obj_euler = utils.quatXYZW_to_eulerXYZ(obj_pose[1])
@@ -192,9 +189,8 @@ class Task():
   #-------------------------------------------------------------------------
   # Reward Function and Task Completion Metrics
   #-------------------------------------------------------------------------
-
   def reward(self):
-    """Get delta rewards for current timestep.
+    """Get delta rewards for the current timestep.
 
     Returns:
       A tuple consisting of the scalar (delta) reward, plus `extras`
@@ -205,7 +201,7 @@ class Task():
     reward, info = 0, {}
 
     if self.goals:
-      # Unpack next goal step.
+      # Unpack the next goal step.
       objs, matches, targs, _, _, metric, params, max_reward = self.goals[0]
 
       # Evaluate by matching object poses.
@@ -219,15 +215,14 @@ class Task():
             target_pose = targs[j]
             if self.is_match(pose, target_pose, symmetry):
               step_reward += max_reward / len(objs)
-              break
 
-      # Evaluate by measuring object intersection with zone.
+      # Evaluate by measuring object intersection with the zone.
       elif metric == 'zone':
         zone_pts, total_pts = 0, 0
         obj_pts, zones = params
         for zone_pose, zone_size in zones:
 
-          # Count valid points in zone.
+          # Count valid points in the zone.
           for obj_id in obj_pts:
             pts = obj_pts[obj_id]
             obj_pose = p.getBasePositionAndOrientation(obj_id)
@@ -248,13 +243,13 @@ class Task():
       reward = self.progress + step_reward - self._rewards
       self._rewards = self.progress + step_reward
 
-      # Move to next goal step if current goal step is complete.
+      # Move to the next goal step if the current goal step is complete.
       if np.abs(max_reward - step_reward) < 0.01:
         self.progress += max_reward  # Update task progress.
         self.goals.pop(0)
 
     else:
-      # At this point we are done with the task but executing the last movements
+      # At this point, we are done with the task but executing the last movements
       # in the plan. We should return 0 reward to prevent the total reward from
       # exceeding 1.0.
       reward = 0.0
@@ -266,16 +261,14 @@ class Task():
 
     Returns:
       True if the episode should be considered a success, which we
-        use for measuring successes, which is particularly helpful for tasks
+        use for measuring successes. This is particularly helpful for tasks
         where one may get successes on the very last time step, e.g., getting
-        the cloth coverage threshold on the last alllowed action.
+        the cloth coverage threshold on the last allowed action.
         However, for bag-items-easy and bag-items-hard (which use the
         'bag-items' metric), it may be necessary to filter out demos that did
         not attain sufficiently high reward in external code. Currently, this
         is done in `main.py` and its ignore_this_demo() method.
     """
-
-   
     return (len(self.goals) == 0) or (self._rewards > 0.99)  
 
   #-------------------------------------------------------------------------
@@ -289,7 +282,7 @@ class Task():
     diff_pos = np.float32(pose0[0][:2]) - np.float32(pose1[0][:2])
     dist_pos = np.linalg.norm(diff_pos)
 
-    # Get rotational error around z-axis (account for symmetries).
+    # Get rotational error around the z-axis (account for symmetries).
     diff_rot = 0
     if symmetry > 0:
       rot0 = np.array(utils.quatXYZW_to_eulerXYZ(pose0[1]))[2]
@@ -320,9 +313,9 @@ class Task():
     return cmap, hmap, mask
 
   def get_random_pose(self, env, obj_size):
-    """Get random collision-free object pose within workspace bounds."""
+    """Get a random collision-free object pose within workspace bounds."""
 
-    # Get erosion size of object in pixels.
+    # Get the erosion size of the object in pixels.
     max_size = np.sqrt(obj_size[0]**2 + obj_size[1]**2)
     erode_size = int(np.round(max_size / self.pix_size))
 
@@ -367,7 +360,7 @@ class Task():
 
 
   def get_random_size(self, min_x, max_x, min_y, max_y, min_z, max_z):
-    """Get random box size."""
+    """Get a random box size."""
     size = np.random.rand(3)
     size[0] = size[0] * (max_x - min_x) + min_x
     size[1] = size[1] * (max_y - min_y) + min_y
@@ -425,7 +418,7 @@ class ContinuousOracle:
     self._actions = []
 
   def act(self, obs, info):
-    """Get oracle action from planner."""
+    """Get oracle action from the planner."""
     if not self._actions:
       # Query the base oracle for pick and place poses.
       act = self._base_oracle.act(obs, info)
