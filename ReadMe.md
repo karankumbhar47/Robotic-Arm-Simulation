@@ -15,15 +15,18 @@
 
 ### Environments ([Sanket Dandge](https://github.com/Sanket-Dandge))
 
-| FileName       | description | requirement                                              |
-| -------------- | ----------- | -------------------------------------------------------- |
+| FileName       | description | requirement                                                      |
+| -------------- | ----------- | ---------------------------------------------------------------- |
 | environment.py |             | <ol><li>utils/utils.py</li><li>utils/pybullet_utils.py</li></ol> |
 
 ### Models ([Vedant Udan](https://github.com/Vedant-Udan))
 
-| FileName    | description | requirement                                              |
-| ----------- | ----------- | -------------------------------------------------------- |
-| gt_state.py |             | |
+| FileName              | description | requirement |
+| --------------------- | ----------- | ----------- |
+| transport.py          |             |             |
+| transport_ablation.py |             |             |
+| attention.py          |             |             |
+| tranport_goal.py      |             |             |
 
 ### Tasks ([Sandesh Ahire](https://github.com/SandeshAhire))
 
@@ -33,8 +36,8 @@
 
 ### Utils (All)
 
-| FileName | description | requirement                                              |
-| -------- | ----------- | -------------------------------------------------------- |
+| FileName | description | requirement                                |
+| -------- | ----------- | ------------------------------------------ |
 | utils.py |             | <ol><li>pybullet</li><li>meshcat</li></ol> |
 
 ### Other (All)
